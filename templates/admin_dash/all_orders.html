@@ -11,8 +11,8 @@
       
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Tables</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Basic tables</li>
+            {% comment %} <li class="breadcrumb-item"><a href="#">Tables</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Basic tables</li> {% endcomment %}
           </ol>
         </nav>
       </div> 
@@ -69,7 +69,7 @@
           </div>
         </div>
         {% else %}
-        <h1 style="color:gold">No orders !!!</h1>
+        <h3 style="color:red">No orders !!!</h3>
         {% endif %}
       </div>
      </div>

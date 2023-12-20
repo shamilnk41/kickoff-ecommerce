@@ -14,6 +14,8 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 import re
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.cache import never_cache
+
 
 
 # Create your views here.
@@ -21,14 +23,14 @@ from django.core.exceptions import ObjectDoesNotExist
 # def user_account(request) :
 #     return render(request, 'user_account/user_dash.html')
 
-
+@never_cache
 @login_required(login_url='log_in')
 def user_orders(request) :
     orders = Order.objects.filter(user=request.user).order_by('-id')
     context = {'orders':orders}
     return render(request, 'user_account/user_orders.html',context)
 
-
+@never_cache
 @login_required(login_url='log_in')
 def view_order(request,t_no) :
     order = Order.objects.filter(tracking_no=t_no).filter(user=request.user).first()
@@ -43,7 +45,7 @@ def view_order(request,t_no) :
     
     
 
-    
+@never_cache    
 @login_required(login_url='log_in')
 def cancel_order(request, t_no):
     try:
@@ -88,7 +90,9 @@ def cancel_order(request, t_no):
     except Exception as e:
         return HttpResponse(f"An error occurred: {str(e)}", status=500)
     # ==========================================
-    
+
+
+@never_cache   
 def return_order(request, t_no):
     order = get_object_or_404(Order, tracking_no=t_no)
 
@@ -103,7 +107,7 @@ def return_order(request, t_no):
     # ==================================
     
 # ================== USER WALLET =============
-
+@never_cache
 @login_required(login_url='log_in')
 def user_wallet(request):
     coupons = Coupon.objects.filter(is_expired=False) 
@@ -115,7 +119,7 @@ def user_wallet(request):
     context = {'wallet': wallet_instance,'coupons':coupons}
     return render(request, 'user_account/wallet_show.html', context)
     
-
+@never_cache
 @login_required(login_url='log_in')
 def user_address(request) :
     new_address = Address.objects.all().order_by('-id')
@@ -124,7 +128,7 @@ def user_address(request) :
     }
     return render(request, 'user_account/user_address.html',context)
 
-
+@never_cache
 @login_required(login_url='log_in')
 def edit_address(request,ad_id) :
     address = Address.objects.get(id=ad_id)
@@ -134,7 +138,7 @@ def edit_address(request,ad_id) :
 
     return render(request, 'user_account/edit_address.html',context)
 
-
+@never_cache
 @login_required(login_url='log_in')
 def update_address(request,ad_id) :
     if request.method == 'POST' :
@@ -168,6 +172,8 @@ def update_address(request,ad_id) :
   
     return render(request, 'user_account/edit_address.html')
 
+
+@never_cache
 @login_required(login_url='log_in')
 def delete_user_address(request, ad_id) :
     address = get_object_or_404(Address, id=ad_id) 
@@ -176,7 +182,7 @@ def delete_user_address(request, ad_id) :
     return redirect('user_address')
    
 
-
+@never_cache
 @login_required(login_url='log_in')
 def account_details(request):
     user = request.user
@@ -240,7 +246,7 @@ def account_details(request):
 
 
 # ====================== DOWNLOAD INVOICE ================
-
+@never_cache
 def generate_invoice(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     invoice_number = str(random.randint(100000, 999999))

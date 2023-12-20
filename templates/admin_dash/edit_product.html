@@ -84,14 +84,14 @@
                             {% endif %}
                         </div>
                         
-                        <div class="form-group">
+                        {% comment %} <div class="form-group">
                             {{ form.filter_price.label_tag }}
                             {{ form.filter_price }} 
                             {% if form.filter_price.errors %}
                                 <p style="color: red;">{{ form.filter_price.errors.0 }}</p>
                             {% endif %}
                         </div>
-    
+     {% endcomment %}
                     
                         {% comment %} <div class="form-group">
                             <label for="id_name">Name</label>

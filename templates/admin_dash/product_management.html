@@ -36,7 +36,7 @@
                   <tbody>
                   {% for product in all_products%}
                     <tr>
-                      <td>{{product.id}}</td>
+                      <td>{{forloop.counter}}</td>
                       <td>{{product.name}}</td>
                       <td>{{product.categories}}</td>
                       <td>{{product.price| stringformat:'d'}}</td>

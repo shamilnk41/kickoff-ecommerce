@@ -6,12 +6,12 @@
     <div class="content-wrapper">
       <div class="page-header">
         {% comment %} <h3 class="page-title"> Basic Tables </h3> {% endcomment %}
-        <h4 class="card-title">Brand Management</h4>
+        <h4 class="card-title">BRAND MANAGEMENT</h4>
       
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Tables</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Basic tables</li>
+            {% comment %} <li class="breadcrumb-item"><a href="#">Tables</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Basic tables</li> {% endcomment %}
           </ol>
         </nav>
       </div>
@@ -20,7 +20,7 @@
           <div class="card">
             {% include "alert.html" %}
             <div class="card-body">
-              <label class="badge badge-success"><a style="color : white;" href="{% url 'add_brand'%}">Add New category</a></label>
+              <label class="badge badge-success"><a style="color : white;" href="{% url 'add_brand'%}">Add New Brand</a></label>
 
               {% comment %} <p class="card-description"> Add class <code>.table</code>
               </p> {% endcomment %}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from PIL import Image
 # Create your models here.
 
 
@@ -39,7 +40,6 @@ class Category(models.Model) :
 
     
 
-
 class Brand(models.Model) :
     name = models.CharField(max_length=100)
     is_block = models.BooleanField(default=False)
@@ -47,11 +47,6 @@ class Brand(models.Model) :
     def __str__(self) -> str:
         return self.name
 
-# class Color (models.Model) :
-#     name = models.CharField( max_length=100)
-#     code = models.CharField( max_length=50)  
-#     def __str__(self) -> str:
-#         return self.name
 
 class Filter_price(models.Model) :
     FILTER_PRICE = (
@@ -79,7 +74,7 @@ class Product(models.Model) :
     is_available = models.BooleanField(default=True)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     # color = models.ForeignKey(Color, on_delete=models.CASCADE)
-    filter_price = models.ForeignKey(Filter_price, on_delete=models.CASCADE)
+    # filter_price = models.ForeignKey(Filter_price, on_delete=models.CASCADE)
     offer = models.ForeignKey(Offer, on_delete=models.SET_NULL, blank=True, null=True)
 
     def discounted_price(self):
@@ -104,11 +99,6 @@ class Images(models.Model) :
     class Meta:
         verbose_name = 'photo'
         verbose_name_plural = 'photos'   
-
-# class Tag(models.Model) :
-#     name = models.CharField(max_length=200)
-#     product = models.ForeignKey(Product,on_delete=models.CASCADE)    
-
 
 class Variants(models.Model) :
     size = models.FloatField(blank=True, null=True)

@@ -18,7 +18,7 @@ from django.http import HttpResponse
 
 # Create your views here.
 
-
+@never_cache
 def sign_up(request):
     if request.user.is_authenticated:
         return render(request, 'base.html')
@@ -100,7 +100,7 @@ def sign_up(request):
 #     return render(request, 'user/log_in.html')
 # 
 #     
-
+@never_cache
 def log_in(request):
     if request.user.is_authenticated:
         return render(request, 'base.html')
@@ -205,18 +205,18 @@ def resend_otp(request):
     return render(request, 'user/otp.html')
 
 # ==============  FORGOT PASSWORD ===========
-
+@never_cache
 def forgot_password_main(request) :
     return render(request, 'user/forgot_password.html')
 
-
+@never_cache
 def home(request) :
-    all_products = Product.objects.filter(is_available =True)[:8]
+    all_products = Product.objects.filter(is_available =True).order_by('-id')[:8]
     banner = Banner.objects.filter(is_available=True).order_by('-id').first()
     banner_2 = Banner.objects.filter(is_available=True).order_by('-id')[1]
     return render(request, 'base.html',{'all_products':all_products,'banner':banner,'banner_2':banner_2})
 
-
+@never_cache
 def show_single_product(request,product_id) :
     # product = Product.objects.filter(id=product_id).first()
     product = get_object_or_404(Product, id=product_id)
@@ -228,7 +228,7 @@ def show_single_product(request,product_id) :
     }
     return render(request, 'single_product.html',context)
 
-
+@never_cache
 def store(request):
     products = Product.objects.filter(is_available=True)
     categories = Category.objects.all()
@@ -238,7 +238,7 @@ def store(request):
     brand = None
     cate_id = request.GET.get('categories')
     brand_id = request.GET.get('brand') 
-    price_range = request.GET.get('price_range') 
+    # price_range = request.GET.get('price_range') 
 
     if brand_id and brand_id != 'None':
         products = products.filter(brand__id=brand_id)
@@ -263,17 +263,17 @@ def store(request):
         'categories': categories,
         'all_products': all_products,
         'brands': brands,
-        'filter_price': filter_price,
+        # 'filter_price': filter_price,
         'brand_id': brand_id,
         'cate_id': cate_id,
         'category': category, 
         'brand': brand,
-        'price_range': price_range, 
+        # 'price_range': price_range, 
     }
 
     return render(request, 'store.html', context)
 
-
+@never_cache
 def search_products(request):
     query = request.GET.get('query')
     categories = Category.objects.all()
@@ -310,7 +310,7 @@ def search_products(request):
         'categories': categories,
         'all_products': all_products,
         'brands': brands,
-        'filter_price': filter_price,
+        # 'filter_price': filter_price,
         # 'brand_id': brand_id,
         # 'cate_id': cate_id,
         # 'category': category,

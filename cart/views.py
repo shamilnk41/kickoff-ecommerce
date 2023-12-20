@@ -206,6 +206,8 @@ def update_cart(request):
 
 def check_out(request):
     cart_items = Cart.objects.filter(user=request.user)
+    if not cart_items.exists():
+        return redirect(reverse('home'))
     # total_price = sum(item.product.price * item.product_qty for item in cart_items)
     total_price = sum(item.total_cost for item in cart_items)
 
