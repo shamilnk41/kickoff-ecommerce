@@ -973,3 +973,248 @@ CORS_ALLOW_HEADERS = [
     'content-type',
     'x-csrftoken',
 ]
+
+
+///////////////////// add to wishlist  
+  btnWishlist.addEventListener("click", function (event) {
+                event.preventDefault();
+    
+                let postObj = {
+                    pid: pid.value,
+                };
+    
+                fetch("{% url 'add_to_wishlist'%}", {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify(postObj),
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    console.log("Response Data:", data);
+    
+                    let alertConfig = {
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while adding the product to the wishlist.',
+                        customContainerClass: 'background-color: #FF5733; color: white;',
+                    };
+    
+                    if (data.status === 'Product added to wishlist') {
+                        alertConfig = {
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'The product has been added to your wishlist successfully!',
+                            customContainerClass: 'background-color: #4CAF50; color: white;',
+                        };
+                    } else if (data.status === 'Product already in wishlist!') {
+                        alertConfig = {
+                            icon: 'info',
+                            title: 'Info',
+                            text: 'Product is already in your wishlist.',
+                            customContainerClass: 'background-color: #FFD700; color: black;',
+                        };
+                    } else if (data.status === 'Login to add to wishlist') {
+                        alertConfig = {
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Please Login to your Account',
+                            customContainerClass: 'background-color: #FF5733; color: white;',
+                        };
+                    }
+    
+                    Swal.fire(alertConfig);
+                });
+            }); 
+
+
+
+
+
+             function showAddToCartModal(name, imageUrl, productId) {
+        let modalContent = `
+        <h3 class="product-title">${name}</h3>
+       
+        <div class="details-filter-row details-row-size">
+            <label for="size">Size:</label>
+            <select name="size" id="size" class="form-control">
+                <option value="" selected="selected">Select a size</option>
+                {% for size in item.product.variants_set.all %}
+                    <option value="{{ size.size }}">{{ size.size }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="details-filter-row details-row-size">
+            <label for="qty">Qty:</label>
+            <input type="hidden" value="${productId}" id="pid">
+            <div class="product-details-quantity">
+                <input type="number" id="txtQty" name="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
+            </div>
+        </div>
+        `;
+
+        // Update modal content
+        $('#addToCartContent').html(modalContent);
+
+        // Show the modal
+        $('#addToCartModal').modal('show');
+    }
+
+    function addToCart() {
+        var productId = $('#pid').val();
+        var size = $('#size').val();
+        var quantity = $('#txtQty').val();
+
+        if (!size || quantity <= 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Please select a size and enter a valid quantity.',
+                customContainerClass: 'background-color: #FF5733; color: white;',
+            });
+            return;
+        }
+
+        var postObj = {
+            product_qty: quantity,
+            pid: productId,
+            size: size,
+        };
+
+        fetch("{% url 'addtocart' %}", {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify(postObj),
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            console.log("Response Data:", data);
+
+            let alertConfig = {
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while adding the product to the cart.',
+                customContainerClass: 'background-color: #FF5733; color: white;',
+            };
+
+            if (data.status === 'Product added to cart') {
+                alertConfig = {
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Product added to the cart successfully!',
+                    customContainerClass: 'background-color: #28a745; color: white;',
+                };
+            } else if (data.status === 'Product already in cart!') {
+                alertConfig = {
+                    icon: 'info',
+                    title: 'Info',
+                    text: 'Product is already in the cart.',
+                    customContainerClass: 'background-color: #007bff; color: white;',
+                };
+            } else if (data.status === 'Product stock not available' || data.status === 'Selected size not available for this product' || data.status === 'Product not found') {
+                alertConfig = {
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.status,
+                    customContainerClass: 'background-color: #FF5733; color: white;',
+                };
+            }
+
+            Swal.fire(alertConfig);
+
+            // Close the modal
+            $('#addToCartModal').modal('hide');
+        }).catch(error => {
+            console.error("Error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An unexpected error occurred.',
+                customContainerClass: 'background-color: #FF5733; color: white;',
+            });
+        });
+    }
+
+         {% comment %} <div class="accordion-summary" id="accordion-payment">
+                                  <div class="card">
+                                        <div class="card-header" id="heading-1">
+                                            <h2 class="card-title">
+                                                <a role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+                                                    Direct bank transfer
+                                                </a>
+                                            </h2>
+                                        </div><!-- End .card-header -->
+                                        <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
+                                            <div class="card-body">
+                                                Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .collapse -->
+                                    </div><!-- End .card --> 
+
+                                    <div class="card">
+                                        <div class="card-header" id="heading-2">
+                                            <h2 class="card-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+                                                    Check payments
+                                                </a>
+                                            </h2>
+                                        </div><!-- End .card-header -->
+                                        <div id="collapse-2" class="collapse" aria-labelledby="heading-2" data-parent="#accordion-payment">
+                                            <div class="card-body">
+                                                Ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. 
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .collapse -->
+                                    </div><!-- End .card -->
+
+                                    <div class="card">
+                                        <div class="card-header" id="heading-3">
+                                            <h2 class="card-title">
+                                                <input type="hidden" value="COD" name="payment_mode">
+                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+                                                    Cash on delivery
+                                                </a>
+                                            </h2>
+                                        </div><!-- End .card-header -->
+                                        <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
+                                            <div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. 
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .collapse -->
+                                    </div><!-- End .card -->
+
+                                    <div class="card">
+                                        <div class="card-header" id="heading-4">
+                                            <h2 class="card-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
+                                                    PayPal <small class="float-right paypal-link">What is PayPal?</small>
+                                                </a>
+                                            </h2>
+                                        </div><!-- End .card-header -->
+                                        <div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
+                                            <div class="card-body">
+                                                Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .collapse -->
+                                    </div><!-- End .card -->
+
+                                    <div class="card">
+                                        <div class="card-header" id="heading-5">
+                                            <h2 class="card-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
+                                                    Credit Card (Stripe)
+                                                    <img src="assets/images/payments-summary.png" alt="payments cards">
+                                                </a>
+                                            </h2>
+                                        </div><!-- End .card-header -->
+                                        <div id="collapse-5" class="collapse" aria-labelledby="heading-5" data-parent="#accordion-payment">
+                                            <div class="card-body"> Donec nec justo eget felis facilisis fermentum.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Lorem ipsum dolor sit ame.
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .collapse -->
+                                    </div><!-- End .card -->
+                                </div><!-- End .accordion --> {% endcomment %}

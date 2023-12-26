@@ -43,14 +43,20 @@
                       <td>{{order.total_price | stringformat:'d'}}</td>
                       <td style="color:green">{{order.status}}</td>
                       <td ><label class="badge badge-info"><a style="color : white;" href="{% url 'view_single_order' order.tracking_no %}"> View </a></label>
-                        {% if order.status != 'Cancel'%}
+                        {% if order.status == 'Cancel' %}
+                          Order Canceled
+                      {% elif order.status == 'Deliverd'%}
+                          Order Deliverd
+                        {% else %}
                           <label class="badge badge-warning"><a style="color : white;" href="{% url 'edit_order_status' order.tracking_no %}"> Edit </a></label>
-                        {% endif %}
+                      {% endif %}
                       </td>
                       {% comment %} <td> <label class="badge badge-danger"><a style="color : white;" href="{% url 'delete_order_admin' order.tracking_no %}"> Cancel </a></label></td> {% endcomment %}
                       <td>
                         {% if order.status == 'Cancel' %}
                         <span style="color: red;">Canceled</span>
+                    {% elif order.status == 'Deliverd'%}
+                    <span style="color: green;">Deliverd</span>
                     {% else %}
                         <button class="badge badge-danger"
                             onclick="showCancelConfirmation('{{ order.tracking_no }}')">Cancel</button>

@@ -13,10 +13,12 @@ from django.http import JsonResponse
 import json
 import random
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+
 
 # Create your views here.
 
-
+@login_required(login_url='log_in')
 def view_cart(request):
     if request.user.is_authenticated:
         carts = Cart.objects.filter(user=request.user)
@@ -32,11 +34,18 @@ def view_cart(request):
 
         if request.method == 'POST':
             coupon_code = request.POST.get('coupon')
-            coupon_obj = Coupon.objects.filter(coupon_code__icontains=coupon_code)
+            coupon_obj  = Coupon.objects.filter(coupon_code__icontains=coupon_code)
+           
 
             if not coupon_obj.exists():
                 messages.warning(request, 'Invalid Coupon')
                 return redirect('view_cart')
+            
+            if UsedCoupon.objects.filter(used_coupon_code__icontains=coupon_code).exists() :
+                messages.warning(request, 'This coupon alredy taken')
+                return redirect('view_cart')
+            else :
+                UsedCoupon.objects.create(used_coupon_code=coupon_code,user=request.user)
 
             if total_cost_user_carts < coupon_obj.first().minimum_amount:
                 messages.warning(request, f'Amount should be greater than {coupon_obj.first().minimum_amount}')
@@ -89,27 +98,9 @@ def view_cart(request):
         return render(request, 'cart/view_cart.html', context)
 
     else:
-        return redirect('home')
+        return redirect('log_in')
 
 
-
-
-
-
-
-# @login_required(login_url='log_in')
-# def remove_coupon(request, cart_id):
-#     cart = Cart.objects.get(id=cart_id)
-
-#     # Check if a coupon is applied before removing it
-#     if cart.coupon:
-#         cart.coupon = None
-#         cart.save()
-#         messages.success(request, 'Coupon Removed')
-#     else:
-#         messages.warning(request, 'No coupon applied')
-
-#     return redirect('view_cart')
 
 @login_required(login_url='log_in')
 def remove_coupon(request, cart_id):
@@ -117,14 +108,16 @@ def remove_coupon(request, cart_id):
     cart = get_object_or_404(Cart, id=cart_id, user=request.user)
 
     # Check if a coupon is applied before removing it
-    if cart.coupon:
+    if cart.coupon: 
         # Iterate through all carts associated with the user and remove the coupon
         user_carts = Cart.objects.filter(user=request.user)
         for user_cart in user_carts:
             if user_cart.coupon:
                 user_cart.coupon = None
                 user_cart.save()
-
+        
+        used_coupon = UsedCoupon.objects.filter(used_coupon_code=cart.coupon.coupon_code,user=request.user)
+        used_coupon.delete()
         messages.success(request, 'Coupon Removed from all carts')
     else:
         messages.warning(request, 'No coupon applied')
@@ -137,7 +130,8 @@ def add_to_cart(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         if request.user.is_authenticated:
             data = json.loads(request.body)  
-            product_qty = data['product_qty']
+            # product_qty = data['product_qty']
+            product_qty = int(data['product_qty']) 
             product_id = data['pid']
             selected_size = data['size']
             product = Product.objects.get(id=product_id)
@@ -204,6 +198,78 @@ def update_cart(request):
     return redirect('view_cart') 
 
 
+# def add_to_wishlist(request) :
+#     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+#         if request.user.is_authenticated:
+#             data = json.loads(request.body)  
+#             product_id = data['pid']
+#             product = Product.objects.get(id=product_id)
+#             if Wishlist.objects.filter(product=product) :
+#                 return JsonResponse({'status': 'Product already in wishlist! '}, status=200)
+#             else :
+#                 Wishlist.objects.create(user=request.user,product=product)
+#                 return JsonResponse({'status': 'Product added to wishlist '}, status=200)
+
+#         else :
+#             return JsonResponse({'status': 'Login to add to wishlist '}, status=200)
+
+        
+#     else :
+#         return JsonResponse({'status': 'Invalid Access'}, status=200)
+# @csrf_exempt
+# def add_to_wishlist(request):
+#     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+#         if request.user.is_authenticated:
+#             data = json.loads(request.body)
+#             product_id = data.get('pid')
+            
+#             if product_id:
+#                 product = Product.objects.get(id=product_id)
+#                 if Wishlist.objects.filter(user=request.user, product=product).exists():
+#                     return JsonResponse({'status': 'Product already in wishlist!'}, status=200)
+#                 else:
+#                     Wishlist.objects.create(user=request.user, product=product)
+#                     return JsonResponse({'status': 'Product added to wishlist'}, status=200)
+#             else:
+#                 return JsonResponse({'status': 'Invalid product ID'}, status=400)
+#         else:
+#             return JsonResponse({'status': 'Login to add to wishlist'}, status=200)
+#     else:
+#         return JsonResponse({'status': 'Invalid Access'}, status=403)
+
+
+
+def add_to_wishlist(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated :
+            product_id = request.POST.get('product_id')
+            product = Product.objects.get(id=product_id)
+            if Wishlist.objects.filter(product=product).exists() :
+                return JsonResponse({'error': 'Product already in your wishlist'})
+            else :
+                Wishlist.objects.create(user=request.user,product=product)
+            return JsonResponse({'message': 'Product added to wishlist successfully'})
+        else :
+            return JsonResponse({'error': 'Please login , add to wishlist'})
+
+    else:
+        # Handle other HTTP methods if necessary
+        return JsonResponse({'error': 'Invalid request method'})
+    
+
+def view_wishlist(request) :
+    wishlist_items = Wishlist.objects.filter(user=request.user)
+    wishlist_items = wishlist_items.annotate(total_quantity=Sum('product__variants__quantity'))
+    return render(request, 'cart/wishlist.html',{'wishlist_items':wishlist_items})
+
+
+def remove_wishlist_product(request,p_id) :
+    product = get_object_or_404(Wishlist,product=p_id)
+    product.delete()
+    messages.success(request, 'Product removed from wishlist')
+    return HttpResponseRedirect(reverse('view_wishlist'))
+
+    
 def check_out(request):
     cart_items = Cart.objects.filter(user=request.user)
     if not cart_items.exists():
@@ -283,7 +349,7 @@ def place_order(request):
             # payment_mode = request.POST.get('payment_mode')
             # payment_id = request.POST.get('payment_id')
             if fname.strip()=='' or lname.strip()=='' or email.strip()=='' or phone.strip()=='' or address.strip()=='' or city.strip()=='' or state.strip()=='' or country.strip()=='' or pincode.strip()=='' :
-                messages.error(request, "Fields cannot be empty!")
+                messages.error(request, "Plaese add address ")
                 return redirect('checkout')
             
             if not fname.isalpha() :
@@ -388,7 +454,8 @@ def place_order(request):
                 order=new_order,
                 product=item.product,
                 price=item.product.price,
-                quantity=item.product_qty
+                quantity=item.product_qty,
+                size=item.size
             )
             order_product = Product.objects.filter(id=item.product_id).first()
             size_variant = Variants.objects.filter(product=order_product, size=item.size).first()

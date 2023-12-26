@@ -4,7 +4,6 @@ from .models import *
 
 admin.site.register(Category)
 admin.site.register(Brand)
-admin.site.register(Filter_price)
 admin.site.register(Product)
 admin.site.register(Variants)
 admin.site.register(Banner)

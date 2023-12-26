@@ -13,6 +13,10 @@ class Coupon(models.Model) :
     minimum_amount = models.IntegerField(default=1000)
 
 
+class UsedCoupon(models.Model) :
+    used_coupon_code = models.CharField(max_length=150) 
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
 
 class Cart(models.Model) :
     user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -92,11 +96,18 @@ class Order(models.Model) :
 
 
 class OrderItem(models.Model) :
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    price = models.FloatField(null=False)
+    order    = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product  = models.ForeignKey(Product, on_delete=models.CASCADE)
+    price    = models.FloatField(null=False)
     quantity = models.IntegerField(null=False)
+    size     = models.FloatField(null=False,default=0)
     
     @property
     def total_price(self):
         return self.price * self.quantity
+    
+
+class Wishlist(models.Model) :
+    user       = models.ForeignKey(User, on_delete=models.CASCADE)    
+    product    = models.ForeignKey(Product,on_delete=models.CASCADE)
+    created_at = models.DateField(auto_now_add=True)

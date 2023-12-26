@@ -27,7 +27,7 @@
                     {% if messages %}
                         <div >
                             {% for message in messages %}
-                                <p style="color: red;">{{ message }}</p>
+                                <span style="color: white; background: #c96; padding: 3px;"> * {{ message }}</span>
                             {% endfor %}
                         </div>
                     {% endif %}
@@ -100,7 +100,7 @@
                                 </div><!-- End .col-sm-6 -->
 
                                 <div class="col-sm-10">
-                                    <label>State / County *</label>
+                                    <label>State </label>
                                     <input type="text" name="state" class="form-control" >
                                 </div><!-- End .col-sm-6 -->
 
@@ -194,82 +194,7 @@
 {% comment %} =================================================================================== {% endcomment %}
 
 
-                                {% comment %} <div class="accordion-summary" id="accordion-payment">
-                                  <div class="card">
-                                        <div class="card-header" id="heading-1">
-                                            <h2 class="card-title">
-                                                <a role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
-                                                    Direct bank transfer
-                                                </a>
-                                            </h2>
-                                        </div><!-- End .card-header -->
-                                        <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
-                                            <div class="card-body">
-                                                Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
-                                            </div><!-- End .card-body -->
-                                        </div><!-- End .collapse -->
-                                    </div><!-- End .card --> 
-
-                                    <div class="card">
-                                        <div class="card-header" id="heading-2">
-                                            <h2 class="card-title">
-                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
-                                                    Check payments
-                                                </a>
-                                            </h2>
-                                        </div><!-- End .card-header -->
-                                        <div id="collapse-2" class="collapse" aria-labelledby="heading-2" data-parent="#accordion-payment">
-                                            <div class="card-body">
-                                                Ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. 
-                                            </div><!-- End .card-body -->
-                                        </div><!-- End .collapse -->
-                                    </div><!-- End .card -->
-
-                                    <div class="card">
-                                        <div class="card-header" id="heading-3">
-                                            <h2 class="card-title">
-                                                <input type="hidden" value="COD" name="payment_mode">
-                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
-                                                    Cash on delivery
-                                                </a>
-                                            </h2>
-                                        </div><!-- End .card-header -->
-                                        <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
-                                            <div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. 
-                                            </div><!-- End .card-body -->
-                                        </div><!-- End .collapse -->
-                                    </div><!-- End .card -->
-
-                                    <div class="card">
-                                        <div class="card-header" id="heading-4">
-                                            <h2 class="card-title">
-                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
-                                                    PayPal <small class="float-right paypal-link">What is PayPal?</small>
-                                                </a>
-                                            </h2>
-                                        </div><!-- End .card-header -->
-                                        <div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
-                                            <div class="card-body">
-                                                Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
-                                            </div><!-- End .card-body -->
-                                        </div><!-- End .collapse -->
-                                    </div><!-- End .card -->
-
-                                    <div class="card">
-                                        <div class="card-header" id="heading-5">
-                                            <h2 class="card-title">
-                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
-                                                    Credit Card (Stripe)
-                                                    <img src="assets/images/payments-summary.png" alt="payments cards">
-                                                </a>
-                                            </h2>
-                                        </div><!-- End .card-header -->
-                                        <div id="collapse-5" class="collapse" aria-labelledby="heading-5" data-parent="#accordion-payment">
-                                            <div class="card-body"> Donec nec justo eget felis facilisis fermentum.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Lorem ipsum dolor sit ame.
-                                            </div><!-- End .card-body -->
-                                        </div><!-- End .collapse -->
-                                    </div><!-- End .card -->
-                                </div><!-- End .accordion --> {% endcomment %}
+                           
 
                                 <button type="submit" class="btn  btn-success w-100 mt-2"> 
                                 {% comment %} <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">  {% endcomment %}
@@ -279,7 +204,7 @@
                                 </button>
                                 {% comment %} <button type="button" class="btn btn-success payWithRazorpay w-100 mt-2">Pay with Razorpay</button> {% endcomment %}
                                 <button type="button" class="btn btn-success payWithRazorpay w-100 mt-2" onclick="submitRazorpayForm()">Pay with Razorpay</button>
-                                <button type="button" class="btn btn-success payWithWallet w-100 mt-2" onclick="payWithWallet()">Pay with Wallet</button>
+                                <button type="button" class="btn btn-success payWithWallet w-100 mt-2">Pay with Wallet</button>
 
                             </div><!-- End .summary -->
                         </aside><!-- End .col-lg-3 -->
@@ -308,6 +233,8 @@
                 radio.checked = false;
             });
         });
+        const walletButton = document.querySelector(".payWithWallet");
+        walletButton.addEventListener("click", payWithWallet);
     });
 
     {% comment %}   PAY WITH WALLET {% endcomment %}
@@ -333,10 +260,17 @@
             },
             error: function() {
                 // Handle errors
-                alert('Error checking wallet balance.');
+              
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Insufficient Balance.',
+                    text: 'Wallet balance is not sufficient.',
+                });
             }
         });
     }
+
+
 
     
 </script>

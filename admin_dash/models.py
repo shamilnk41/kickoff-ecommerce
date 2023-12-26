@@ -48,16 +48,16 @@ class Brand(models.Model) :
         return self.name
 
 
-class Filter_price(models.Model) :
-    FILTER_PRICE = (
-        ('500 TO 1000','500 TO 1000'),
-        ('1000 TO 1500','1000 TO 1500'),
-        ('1500 TO 2000','1500 TO 2000'),
-        ('2000 TO 2500','2000 TO 2500'),
-    )      
-    price = models.CharField(choices=FILTER_PRICE, max_length=50)
-    def __str__(self) -> str:
-        return self.price
+# class Filter_price(models.Model) :
+#     FILTER_PRICE = (
+#         ('500 TO 1000','500 TO 1000'),
+#         ('1000 TO 1500','1000 TO 1500'),
+#         ('1500 TO 2000','1500 TO 2000'),
+#         ('2000 TO 2500','2000 TO 2500'),
+#     )      
+#     price = models.CharField(choices=FILTER_PRICE, max_length=50)
+#     def __str__(self) -> str:
+#         return self.price
 
 
 class Product(models.Model) :

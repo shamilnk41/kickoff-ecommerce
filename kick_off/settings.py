@@ -21,17 +21,9 @@ EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'shamilnk0458@gmail.com'
-# EMAIL_HOST_PASSWORD = 'vecfptwmixfznxdr'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='shamilnk0458@gmail.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='vecfptwmixfznxdr')
 
-# EMAIL_HOST = config('EMAIL_HOST', default='localhost')
-# EMAIL_PORT = config('EMAIL_PORT', default=25, cast=int)
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,7 +31,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-8$q1r0=vwc%wu9tqtx&s=%x%8pdk)m=+s@i##$3&xblzko#f%a'
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY',default='django-insecure-8$q1r0=vwc%wu9tqtx&s=%x%8pdk)m=+s@i##$3&xblzko#f%a')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 # DEBUG = True
@@ -87,6 +79,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'cart.context_processors.cart_count',
+                'cart.context_processors.wishlist_count',
             ],
         },
     },

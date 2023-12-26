@@ -9,7 +9,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 import re
 from django.core.paginator import Paginator,EmptyPage, InvalidPage
-from admin_dash.models import Product,Category,Brand,Filter_price,Variants,Banner
+from admin_dash.models import Product,Category,Brand,Variants,Banner
 from django.core.exceptions import ObjectDoesNotExist
 import pyotp
 from datetime import datetime,timedelta
@@ -154,7 +154,19 @@ def send_otp(request):
     request.session['otp_secret_key'] = totp_secret_key  
     request.session['otp_valid_date'] = str(datetime.now() + timedelta(minutes=1))
     request.session['otp'] = otp  
-    send_mail("OTP for sign up", otp, 'shamilnk0458@gmail.com', [request.session['email']], fail_silently=False)
+
+    email_template = 'user/email_otp.html'
+    html_message = render(request, email_template, {'otp': otp}).content.decode('utf-8')
+
+    # send_mail("OTP for sign up", otp, 'shamilnk0458@gmail.com', [request.session['email']], fail_silently=False)
+    send_mail(
+        subject="OTP for Sign Up",
+        message="",  # Leave this empty as you are sending HTML content
+        from_email='shamilnk0458@gmail.com',
+        recipient_list=[request.session['email']],
+        html_message=html_message,
+        fail_silently=False
+    )
     print('otp send 1st')
     return render(request, 'user/otp.html')
 
@@ -233,7 +245,6 @@ def store(request):
     products = Product.objects.filter(is_available=True)
     categories = Category.objects.all()
     brands = Brand.objects.all()
-    filter_price = Filter_price.objects.all()
     category = None 
     brand = None
     cate_id = request.GET.get('categories')

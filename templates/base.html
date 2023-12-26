@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Molla - Bootstrap eCommerce Template</title>
+    <title>Kickoff saga</title>
     <meta name="keywords" content="HTML5 Template">
     <meta name="description" content="Molla - Bootstrap eCommerce Template">
     <meta name="author" content="p-themes">
@@ -49,7 +49,7 @@
                         </button>
 
                         <a href="{% url 'home'%}" class="logo">
-                            <img src="{% static 'assets/images/demos/demo-5/logo.png' %}" alt="Molla Logo" width="105" height="25">
+                            <img src="{% static 'assets/images/kickoffsaga_logo.png' %}" alt="Kickoffsaga Logo" width="105" height="25">
                         </a>
 
                         <nav class="main-nav">
@@ -103,14 +103,20 @@
                         <a href="{% url 'account_details'%}" class="wishlist-link">
                             <i class="icon-user"></i>
                         </a>
+                        <a href="{% url 'view_wishlist'%}" class="wishlist-link">
+                            <i class="icon-heart-o"></i>
+                            <span class="cart-count" style="font-size:14px; color:white; background:#c66; padding:4px; border-radius:50%;">{{ wishlist_item_count}}</span>
+                        </a> 
                         {% else %}
                         <a href="{% url 'log_in'%}" class="wishlist-link">
                             <i class="icon-user"></i>
                         </a>
-                        {% endif %}
-                        {% comment %} <a href="wishlist.html" class="wishlist-link">
+                        <a href="{% url 'log_in'%}" class="wishlist-link">
                             <i class="icon-heart-o"></i>
-                        </a> {% endcomment %}
+                         
+                        </a> 
+                        {% endif %}
+                       
                        <div class="dropdown cart-dropdown">
                             <a href="{% url 'view_cart' %}" class="dropdown-toggle" role="button" >
                                 <i class="icon-shopping-cart"></i>
@@ -1034,7 +1040,7 @@
                     <div class="row">
                         <div class="col-sm-12 col-lg-6">
                             <div class="widget widget-about">
-                                <img src="{% static 'assets/images/demos/demo-5/logo-footer.png' %}" class="footer-logo" alt="Footer Logo" width="105" height="25">
+                                <img src="{% static 'assets/images/kickoffsaga_logo_black.png' %}" class="footer-logo" alt="Kickoffsaga Logo" width="105" height="25">
                                 <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus. </p>
                                 
                                 <div class="widget-about-info">
@@ -1059,11 +1065,11 @@
                                 <h4 class="widget-title">Information</h4><!-- End .widget-title -->
 
                                 <ul class="widget-list">
-                                    <li><a href="about.html">About Molla</a></li>
+                                    <li><a href="#">About Molla</a></li>
                                     <li><a href="#">How to shop on Molla</a></li>
-                                    <li><a href="faq.html">FAQ</a></li>
-                                    <li><a href="contact.html">Contact us</a></li>
-                                    <li><a href="login.html">Log in</a></li>
+                                    <li><a href="#">FAQ</a></li>
+                                    <li><a href="#">Contact us</a></li>
+                                    <li><a href="#">Log in</a></li>
                                 </ul><!-- End .widget-list -->
                             </div><!-- End .widget -->
                         </div><!-- End .col-sm-4 col-lg-3 -->
@@ -1089,7 +1095,7 @@
 
                                 <ul class="widget-list">
                                     <li><a href="#">Sign In</a></li>
-                                    <li><a href="cart.html">View Cart</a></li>
+                                    <li><a href="#">View Cart</a></li>
                                     <li><a href="#">My Wishlist</a></li>
                                     <li><a href="#">Track My Order</a></li>
                                     <li><a href="#">Help</a></li>

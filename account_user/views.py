@@ -62,7 +62,8 @@ def cancel_order(request, t_no):
 
         for item in order_items:
             product = item.product
-            variant = Variants.objects.filter(product=product).first()
+            size = item.size
+            variant = Variants.objects.filter(product=product,size=size).first()
             if variant:
                 variant.quantity += item.quantity
                 print('varian saved ')

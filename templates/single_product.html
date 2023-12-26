@@ -116,7 +116,7 @@
                                             
                                         </div><!-- End .select-custom -->
 
-                                        <a href="#" class="size-guide"><i class="icon-th-list"></i>size guide</a>
+                                        {% comment %} <a href="#" class="size-guide"><i class="icon-th-list"></i>size guide</a> {% endcomment %}
                                     </div><!-- End .details-filter-row -->
 
                                     <div class="details-filter-row details-row-size">
@@ -139,8 +139,10 @@
                                         <a href="{% url 'addtocart'%}" id="btnCart" class="btn-product btn-cart"><span>add to cart</span></a>
 
                                         <div class="details-action-wrapper">
-                                            {% comment %} <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a> {% endcomment %}
+                                            {% comment %} <a href="{% url 'add_to_wishlist'%}" id="btnwishlist" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>  {% endcomment %}
                                             {% comment %} <a href="#" class="btn-product btn-compare" title="Compare"><span>Add to Compare</span></a> {% endcomment %}
+                                            <a href="#" class="btn-product btn-wishlist" title="Wishlist" onclick="addToWishlist({{ product.id }})"><span>Add to Wishlist</span></a>
+
                                         </div><!-- End .details-action-wrapper -->
                                     </div><!-- End .product-details-action -->
 
@@ -416,6 +418,8 @@
             const pid = document.getElementById("pid");
             const btnCart = document.getElementById("btnCart");
             const sizeSelect = document.getElementById("size");
+            const btnWishlist = document.querySelector(".btnwishlist");  // New line
+
     
             btnCart.addEventListener("click", function (event) {
                 event.preventDefault();
@@ -494,7 +498,50 @@
                     Swal.fire(alertConfig);
                 });
             });
+
+
+      
         });
+
+        function addToWishlist(productId) {
+            // Make an AJAX request to your add_to_wishlist view
+            $.ajax({
+                url: '{% url "add_to_wishlist" %}',  // Update this with your actual URL
+                type: 'POST',
+                data: {
+                    'product_id': productId,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'  // Include CSRF token for Django
+                },
+                success: function(response) {
+                    if (response.message) {
+                        const alertConfig = {
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                            customContainerClass: 'background-color: #28a745; color: white;',
+                        };
+                        Swal.fire(alertConfig);
+                    } else {
+                        const alertConfig = {
+                            icon: 'warning',
+                            title: 'Warning',
+                            text: response.error,
+                            customContainerClass: 'background-color: #FF5733; color: white;',
+                        };
+                        Swal.fire(alertConfig);
+                    }
+                },
+                error: function(error) {
+                    const alertConfig = {
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred',
+                        customContainerClass: 'background-color: #FF5733; color: white;',
+                    };
+                    Swal.fire(alertConfig);
+                }
+            });
+        }
     </script>
     
         
